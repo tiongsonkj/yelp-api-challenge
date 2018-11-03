@@ -36,3 +36,17 @@
   display: flex;
   justify-content: center;
 }
+
+/* MAIN CARDS */
+.card {
+  max-width: 300px;
+  margin-bottom: 75px;
+}
+
+.card-img-top {
+  height: 260px;
+}
+
+.row {
+  justify-content: space-evenly;
+}
