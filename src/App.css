@@ -56,6 +56,18 @@
   margin-top: 30px;
 }
 
-#detailCard {
+#detailCardContainer {
   margin-top: 30px;
+}
+
+#detailCard {
+  max-width: 400px;
+}
+
+#detailCardImg {
+  height: 350px;
+}
+
+.categoryTitle {
+  text-align: left;
 }

@@ -20,8 +20,13 @@ class Details extends Component {
     }
 
     render() {
-        const { picture, name } = this.props.business.business;
-
+        const { picture, name, location, price, rating, categories, phoneNum, yelpPageLink} = this.props.business.business;
+       
+        const category = categories.map((cat, index) => (
+            <li className="categoryTitle" key={index}>{cat.title}</li>
+        ));
+       
+        console.log(this.props.business.business); 
         return (
             <div>
                 <button 
@@ -32,12 +37,38 @@ class Details extends Component {
                     Search again
                 </button>
 
-                <div id="detailCard" className="container">
+                <div id="detailCardContainer" className="container">
                     <div className="row">
-                    <div className="card">
-                        <img className="card-img-top" src={picture} alt="business"/>
+                    <div id="detailCard" className="card">
+                        <img id="detailCardImg" className="card-img-top" src={picture} alt="business"/>
                         <div className="card-body">
-                            <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                            <h3>{name}</h3><hr/>
+                            <div className="row">
+                                <div id="otherCategoriesCol" className="col-6">
+                                    <b>Categories:</b><br/>
+                                    <ol>
+                                        {category}
+                                    </ol>
+                                </div>
+                                <div id="addressCol" className="col-6">
+                                    <b>Address:</b><br/>
+                                    <p>{location.address1}<br/>{location.city}, {location.state} {location.zip_code}</p>
+                                </div>
+                            </div>
+
+                            <div className="row">
+                                <div id="otherCategoriesCol" className="col-6">
+                                    <b>Phone:</b><br/>
+                                    <p>{phoneNum}</p>
+                                    <a href={yelpPageLink} target="_blank">Yelp Business Page</a>
+                                </div>
+                                <div id="addressCol" className="col-6">
+                                    <b>Price:</b><br/>
+                                    <p>{price}<span style={{color: '#d3d3d3'}}>/&#36;&#36;&#36;&#36;</span></p>
+                                    <b>Rating:</b><br/>
+                                    <p>{rating}<span style={{color: '#d3d3d3'}}>/5</span></p>
+                                </div>
+                            </div>
                         </div>
                         </div>
                     </div>
