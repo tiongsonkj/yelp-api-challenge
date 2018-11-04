@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 // import Jumbotron from '../Jumbotron/Jumbotron';
 // import axios from 'axios';
 import $ from 'jquery';
+import replacementImage from '../../assets/no_image_available.jpg';
+import PropTypes from 'prop-types';
+import Spinner from '../Spinner/Spinner';
 
 // redux
 import { connect } from 'react-redux';
@@ -18,9 +21,6 @@ class Main extends Component {
             chosenBusiness: [],
             search: ''
         }
-
-        this.onChange = this.onChange.bind(this);
-
         // this.base_url = "http://localhost:3001";
 
         // this.axiosConfig = {
@@ -53,14 +53,14 @@ class Main extends Component {
         this.loadYelpData();        
     }
 
-    onChange(e) {
-        this.setState({search: e.target.value})
+    onChange = event => {
+        this.setState({search: event.target.value})
     }
 
     loadYelpData() {
         const requestObject = {
             'url': this.cors_anywhere_url + "/" + this.yelp_search_url,
-            'data': {location: '60540'},
+            'data': {location: '60540', sort_by: 'distance'},
             headers: {'Authorization': this.token},
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log('AJAX error, jqXHR = ', jqXHR, ', textStatus = ',
@@ -80,8 +80,39 @@ class Main extends Component {
         });
     };
 
-    searchForBusiness = input => {
+    onSubmit = event => {
+        event.preventDefault();
 
+        // empty the business state array for the spinner
+        this.setState({ businesses: []});
+
+        // grab state
+        const searchTerm = this.state.search;
+
+        // prepare 
+        const requestObject = {
+            'url': this.cors_anywhere_url + "/" + this.yelp_search_url,
+            'data': {term: searchTerm, location: '60540', sort_by: 'distance'},
+            headers: {'Authorization': this.token},
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.log('AJAX error, jqXHR = ', jqXHR, ', textStatus = ',
+                textStatus, ', errorThrown = ', errorThrown)
+            }
+        }
+        
+        let array = [];
+        $.ajax(requestObject)
+            .done(response => {
+                //map through the businesses array and add them to our new array
+                response.businesses.map(business => {
+                   return array.push(business);
+                })
+
+                this.setState({ 
+                    businesses: array,
+                    search: ''
+                });
+        });
     };
 
     grabBusiness = data => {
@@ -104,10 +135,11 @@ class Main extends Component {
     };
 
     render() {
-        console.log(this.state);
+        console.log(this.state.businesses);
+
         const businessDisplay = this.state.businesses.map(business => (
             <div key={business.id} className="card">
-                <img className="card-img-top" src={business.image_url} alt="Business"/>
+                <img className="card-img-top" src={business.image_url ? business.image_url : replacementImage} alt="Business"/>
                 <div className="card-body">
                     <h5 className="card-title">{business.name}</h5>
                     <p className="card-text">
@@ -115,6 +147,7 @@ class Main extends Component {
                     </p>
                     <button
                         className="btn btn-primary"
+                        type="button"
                         onClick={this.grabBusiness.bind(this, business)}
                     >
                     More Info
@@ -127,12 +160,11 @@ class Main extends Component {
             <div>
                 <div className="jumbotron">
                     <div className="container text-center">
-                        {/* <img src= "assets/images/logo.png" className="img-thumbnail animated zoomInDown" alt="binoculars-man" id="logo"/> */}
                         <h6 className="text-center">Search for a business in Naperville!</h6>
                         <hr className="bg-white"/>
                         <div className="row" id="searchbar">
                         <div className="col-md-6">
-                            <form action="">
+                            <form onSubmit={this.onSubmit}>
                                 <div className="input-group">
                                     <input 
                                         type="text" 
@@ -142,11 +174,9 @@ class Main extends Component {
                                         onChange={this.onChange}
                                         value={this.state.search}
                                     />
-                                    <span className="input-group-addon" id="search-icon">
-                                        <button onClick={this.searchForBusiness} className="btn btn-outline-dark btn-search-event">
-                                            <i className="fa fa-search" aria-hidden="true"></i>
-                                        </button>
-                                    </span>
+                                    <button type="submit" className="btn btn-outline-dark btn-search-event">
+                                        <i className="fa fa-search" aria-hidden="true"></i>
+                                    </button>
                                 </div>
                             </form>
                         </div>
@@ -156,7 +186,7 @@ class Main extends Component {
 
                 <div className="container">
                     <div className="row">
-                        {businessDisplay}
+                        {this.state.businesses.length === 0 ? <Spinner/> : businessDisplay}
                     </div>
                 </div>
             </div>

@@ -2,7 +2,6 @@ import { SET_CURRENT_BUSINESS } from '../actions/types';
 
 // initial state for reducer
 const initialState = {
-    isLoading: false,
     business: {}
 };
 

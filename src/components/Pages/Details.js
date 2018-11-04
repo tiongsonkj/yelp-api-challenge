@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 // import { Link } from 'react-router-dom';
 import { clearBusiness } from '../../actions/actions';
 import { connect } from 'react-redux';
+import replacementImage from '../../assets/no_image_available.jpg';
 
 import PropTypes from 'prop-types'; //WHAT IS THIS?! WHAT DOES IT DO?!
 
@@ -40,31 +41,32 @@ class Details extends Component {
                 <div id="detailCardContainer" className="container">
                     <div className="row">
                     <div id="detailCard" className="card">
-                        <img id="detailCardImg" className="card-img-top" src={picture} alt="business"/>
+                        <img id="detailCardImg" className="card-img-top" src={picture ? picture : replacementImage} alt="business"/>
                         <div className="card-body">
                             <h3>{name}</h3><hr/>
                             <div className="row">
-                                <div id="otherCategoriesCol" className="col-6">
+                                <div className="col-6">
                                     <b>Categories:</b><br/>
-                                    <ol>
+                                    <ul>
                                         {category}
-                                    </ol>
+                                    </ul>
                                 </div>
-                                <div id="addressCol" className="col-6">
+                                <div className="col-6">
                                     <b>Address:</b><br/>
                                     <p>{location.address1}<br/>{location.city}, {location.state} {location.zip_code}</p>
                                 </div>
                             </div>
 
                             <div className="row">
-                                <div id="otherCategoriesCol" className="col-6">
+                                <div className="col-6">
                                     <b>Phone:</b><br/>
                                     <p>{phoneNum}</p>
                                     <a href={yelpPageLink} target="_blank">Yelp Business Page</a>
                                 </div>
-                                <div id="addressCol" className="col-6">
+                                <div className="col-6">
                                     <b>Price:</b><br/>
-                                    <p>{price}<span style={{color: '#d3d3d3'}}>/&#36;&#36;&#36;&#36;</span></p>
+                                    {price ? <p>{price}<span style={{color: '#d3d3d3'}}>/&#36;&#36;&#36;&#36;</span></p> : <p>N/A</p>}
+                                    
                                     <b>Rating:</b><br/>
                                     <p>{rating}<span style={{color: '#d3d3d3'}}>/5</span></p>
                                 </div>
