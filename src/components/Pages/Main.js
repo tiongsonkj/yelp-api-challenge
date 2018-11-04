@@ -1,7 +1,12 @@
 import React, { Component } from 'react';
 import Jumbotron from '../Jumbotron/Jumbotron';
+// import { Link } from 'react-router-dom';
 // import axios from 'axios';
 import $ from 'jquery';
+
+// redux
+import { connect } from 'react-redux';
+import { setBusiness } from '../../actions/actions.js';
 
 
 
@@ -10,7 +15,9 @@ class Main extends Component {
         super(props);
 
         this.state = {
-            businesses: []
+            businesses: [],
+            currentBusinessId: '',
+            currentBusinessName: ''
         }
 
         this.base_url = "http://localhost:3001";
@@ -25,13 +32,11 @@ class Main extends Component {
         };
 
         this.cors_anywhere_url = 'https://cors-anywhere.herokuapp.com';
-        
         this.yelp_search_url = 'https://api.yelp.com/v3/businesses/search';
-
         this.token = 'Bearer cRXokvfb2tTyvP0J0U01MCoe3FdERmBbYHnQv-yfbeuIoGZQQdomPnRA_72uuYRJzKVrzqAh_zoA1AkW408AGOhBLzWnd0uyxTc6ew2KWfLm4WILFBDRscYfWU_cW3Yx';
-
         // this.loadYelpData = this.loadYelpData.bind(this);
-    
+
+        this.onClick = this.onClick.bind(this);
     }
 
 
@@ -65,28 +70,49 @@ class Main extends Component {
         $.ajax(requestObject)
             .done(response => {
                 // this.setState({ businesses: response });
-                console.log(response.businesses);
+                // console.log(response.businesses);
 
                 //map through the businesses array and add them to our new array
                 response.businesses.map(business => {
-                    array.push(business);
+                   return array.push(business);
                 })
-                console.log(array);
+
                 this.setState({ businesses: array });
+                console.log(this.state.businesses[0]);
+                this.setState({
+                    currentBusinessId: this.state.businesses[0].id,
+                    currentBusinessName: this.state.businesses[0].name
+                })
         });
+    };
+
+    onClick(e) {
+        e.preventDefault();
+        
+        const currentBusinessData = {
+            id: this.state.currentBusinessId,
+            name: this.state.currentBusinessName
+        }
+        // console.log(businessData);
+        this.props.setBusiness(currentBusinessData, this.props.history.push('/details'));
     }
 
     render() {
-        console.log(this.state.businesses[0]);
+        // console.log(this.state.businesses[0]);
         const businessDisplay = this.state.businesses.map(business => (
             <div key={business.id} className="card">
-                <img className="card-img-top" src={business.image_url} alt="Card image cap"/>
+                <img className="card-img-top" src={business.image_url} alt="Business"/>
                 <div className="card-body">
                     <h5 className="card-title">{business.name}</h5>
                     <p className="card-text">
                         {business.location.address1}<br/>{business.location.city}, {business.location.zip_code}
                     </p>
-                    <a href="#" className="btn btn-primary">More Info</a>
+                    <button
+                        className="btn btn-primary"
+                        onClick={this.onClick}
+                    >
+                    More Info
+                    </button>
                 </div>
             </div>
         ));
@@ -105,4 +131,4 @@ class Main extends Component {
     }
 }
 
-export default Main;
+export default connect(null, { setBusiness })(Main);
