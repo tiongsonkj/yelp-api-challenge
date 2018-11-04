@@ -12,7 +12,7 @@ class Jumbotron extends Component {
                     <div className="col-md-6">
                         <form action="">
                             <div className="input-group">
-                                <input type="text" className="form-control" id="search-term" placeholder="Search. . ."/>
+                                <input type="text" className="form-control" id="search-term" placeholder="Search..."/>
                                 <span className="input-group-addon" id="search-icon">
                                     <button className="btn btn-outline-dark btn-search-event">
                                         <i className="fa fa-search" aria-hidden="true"></i>

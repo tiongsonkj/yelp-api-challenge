@@ -16,8 +16,7 @@ class Main extends Component {
 
         this.state = {
             businesses: [],
-            currentBusinessId: '',
-            currentBusinessName: ''
+            chosenBusiness: []
         }
 
         this.base_url = "http://localhost:3001";
@@ -36,7 +35,7 @@ class Main extends Component {
         this.token = 'Bearer cRXokvfb2tTyvP0J0U01MCoe3FdERmBbYHnQv-yfbeuIoGZQQdomPnRA_72uuYRJzKVrzqAh_zoA1AkW408AGOhBLzWnd0uyxTc6ew2KWfLm4WILFBDRscYfWU_cW3Yx';
         // this.loadYelpData = this.loadYelpData.bind(this);
 
-        this.onClick = this.onClick.bind(this);
+        // this.onClick = this.onClick.bind(this);
     }
 
 
@@ -58,7 +57,7 @@ class Main extends Component {
     loadYelpData() {
         const requestObject = {
             'url': this.cors_anywhere_url + "/" + this.yelp_search_url,
-            'data': {location: '92697'},
+            'data': {location: '60540'},
             headers: {'Authorization': this.token},
             error: function(jqXHR, textStatus, errorThrown) {
                 console.log('AJAX error, jqXHR = ', jqXHR, ', textStatus = ',
@@ -78,22 +77,27 @@ class Main extends Component {
                 })
 
                 this.setState({ businesses: array });
-                console.log(this.state.businesses[0]);
-                this.setState({
-                    currentBusinessId: this.state.businesses[0].id,
-                    currentBusinessName: this.state.businesses[0].name
-                })
         });
     };
 
-    onClick(e) {
-        e.preventDefault();
-        
+    grabBusiness = data => {
+
+        // when we click on the more info button of this specific card...
+        // grab the specific business data 
+        console.log(data);
         const currentBusinessData = {
-            id: this.state.currentBusinessId,
-            name: this.state.currentBusinessName
+            categories: data.categories,
+            coordinates: data.coordinates,
+            id: data.id,       
+            location: data.location, 
+            name: data.name,                            
+            phoneNum: data.display_phone,
+            picture: data.image_url,
+            price: data.price,            
+            rating: data.rating
         }
-        // console.log(businessData);
+
+        // console.log(currentBusinessData);
         this.props.setBusiness(currentBusinessData, this.props.history.push('/details'));
     }
 
@@ -109,7 +113,7 @@ class Main extends Component {
                     </p>
                     <button
                         className="btn btn-primary"
-                        onClick={this.onClick}
+                        onClick={this.grabBusiness.bind(this, business)}
                     >
                     More Info
                     </button>

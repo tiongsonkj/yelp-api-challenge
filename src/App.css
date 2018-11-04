@@ -50,3 +50,12 @@
 .row {
   justify-content: space-evenly;
 }
+
+/* DETAIL PAGE */
+#searchAgain {
+  margin-top: 30px;
+}
+
+#detailCard {
+  margin-top: 30px;
+}

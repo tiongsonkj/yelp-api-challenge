@@ -20,19 +20,27 @@ class Details extends Component {
     }
 
     render() {
-        console.log(this.props.business);
+        const { picture, name } = this.props.business.business;
 
         return (
             <div>
                 <button 
                     className="btn btn-success"
+                    id="searchAgain"
                     onClick={this.searchAgain.bind(this)}
                 >
                     Search again
                 </button>
 
-                <div>
-                    {/* {props} */}
+                <div id="detailCard" className="container">
+                    <div className="row">
+                    <div className="card">
+                        <img className="card-img-top" src={picture} alt="business"/>
+                        <div className="card-body">
+                            <p className="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+                        </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         )
