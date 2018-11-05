@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-// import { Link } from 'react-router-dom';
 import { clearBusiness } from '../../actions/actions';
 import { connect } from 'react-redux';
 import replacementImage from '../../assets/no_image_available.jpg';
 
-import PropTypes from 'prop-types'; //WHAT IS THIS?! WHAT DOES IT DO?!
+import PropTypes from 'prop-types'; //WHAT IS THIS?! WHAT DOES IT DO AGAIN?!
 
 class Details extends Component {
     constructor(props) {

@@ -1,5 +1,4 @@
 const express = require('express');
-const restify = require('restify');
 const config = require('./config');
 const yelp = require('yelp-fusion');
 const bodyParser = require('body-parser');
