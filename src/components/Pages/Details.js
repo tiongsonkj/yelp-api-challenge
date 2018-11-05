@@ -14,7 +14,7 @@ class Details extends Component {
         }
     }
 
-    searchAgain(e) {
+    searchAgain = e => {
         e.preventDefault();
         this.props.clearBusiness(this.props.history.push('/'));
     }
@@ -32,7 +32,7 @@ class Details extends Component {
                 <button 
                     className="btn btn-success"
                     id="searchAgain"
-                    onClick={this.searchAgain.bind(this)}
+                    onClick={this.searchAgain}
                 >
                     Search again
                 </button>
