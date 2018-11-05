@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 // import Jumbotron from '../Jumbotron/Jumbotron';
-// import axios from 'axios';
-import $ from 'jquery';
+import axios from 'axios';
 import replacementImage from '../../assets/no_image_available.jpg';
-import PropTypes from 'prop-types';
 import Spinner from '../Spinner/Spinner';
 
 // redux
@@ -19,37 +17,16 @@ class Main extends Component {
         this.state = {
             businesses: [],
             chosenBusiness: [],
-            search: ''
+            search: '',
+            error: false
         }
-        // this.base_url = "http://localhost:3001";
-
-        // this.axiosConfig = {
-        //     headers: {
-        //       "Content-Type": "application/json;charset=UTF-8",
-        //       "Access-Control-Allow-Origin": "*",
-        //       "Access-Control-Allow-Headers": "*",
-        //       "Access-Control-Allow-Methods": "PUT, GET, POST, DELETE, OPTIONS"
-        //     }
-        // };
-
-        this.cors_anywhere_url = 'https://cors-anywhere.herokuapp.com';
-        this.yelp_search_url = 'https://api.yelp.com/v3/businesses/search';
-        this.token = 'Bearer cRXokvfb2tTyvP0J0U01MCoe3FdERmBbYHnQv-yfbeuIoGZQQdomPnRA_72uuYRJzKVrzqAh_zoA1AkW408AGOhBLzWnd0uyxTc6ew2KWfLm4WILFBDRscYfWU_cW3Yx';
+        
+        this.base_url = "http://localhost:3001";
     }
 
 
 
     componentDidMount() {
-        // axios.get(this.cors_anywhere_url + "/" + this.yelp_search_url, {
-        //     params: {
-        //         latitude: 41.77359,
-        //         longitutde: -88.15968
-        //     }
-        // }, this.axiosConfig)
-        // .then(response => {
-        //     console.log(response);
-        // });
-
         this.loadYelpData();        
     }
 
@@ -58,23 +35,12 @@ class Main extends Component {
     }
 
     loadYelpData() {
-        const requestObject = {
-            'url': this.cors_anywhere_url + "/" + this.yelp_search_url,
-            'data': {location: '60540', sort_by: 'distance'},
-            headers: {'Authorization': this.token},
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log('AJAX error, jqXHR = ', jqXHR, ', textStatus = ',
-                textStatus, ', errorThrown = ', errorThrown)
-            }
-        }
-        
         let array = [];
-        $.ajax(requestObject)
-            .done(response => {
-                //map through the businesses array and add them to our new array
-                response.businesses.map(business => {
-                   return array.push(business);
-                })
+        axios.get(this.base_url)
+            .then(response => {
+                response.data.map(business => {
+                    return array.push(business);
+                });
 
                 this.setState({ businesses: array });
         });
@@ -83,36 +49,32 @@ class Main extends Component {
     onSubmit = event => {
         event.preventDefault();
 
-        // empty the business state array for the spinner
-        this.setState({ businesses: []});
-
         // grab state
         const searchTerm = this.state.search;
-
-        // prepare 
-        const requestObject = {
-            'url': this.cors_anywhere_url + "/" + this.yelp_search_url,
-            'data': {term: searchTerm, location: '60540', sort_by: 'distance'},
-            headers: {'Authorization': this.token},
-            error: function(jqXHR, textStatus, errorThrown) {
-                console.log('AJAX error, jqXHR = ', jqXHR, ', textStatus = ',
-                textStatus, ', errorThrown = ', errorThrown)
-            }
-        }
         
-        let array = [];
-        $.ajax(requestObject)
-            .done(response => {
-                //map through the businesses array and add them to our new array
-                response.businesses.map(business => {
-                   return array.push(business);
-                })
+        if (searchTerm === '') {
+            // change error to true so that the search bar can change
+            this.setState({ error: true });
+            return false;
+        } else {
+            this.setState({ error: false });
 
-                this.setState({ 
-                    businesses: array,
-                    search: ''
-                });
-        });
+            // empty the business state array for the spinner            
+            this.setState({ businesses: []});
+            let array = [];
+
+            axios.get(this.base_url + `/getsearch/${searchTerm}`)
+                .then(response => {
+                    response.data.map(business => {
+                        return array.push(business);
+                    })
+
+                    this.setState({
+                        businesses: array,
+                        search: ''
+                    });
+            });
+        }
     };
 
     grabBusiness = data => {
@@ -135,8 +97,6 @@ class Main extends Component {
     };
 
     render() {
-        console.log(this.state.businesses);
-
         const businessDisplay = this.state.businesses.map(business => (
             <div key={business.id} className="card">
                 <img className="card-img-top" src={business.image_url ? business.image_url : replacementImage} alt="Business"/>
@@ -163,24 +123,29 @@ class Main extends Component {
                         <h6 className="text-center">Search for a business in Naperville!</h6>
                         <hr className="bg-white"/>
                         <div className="row" id="searchbar">
-                        <div className="col-md-6">
-                            <form onSubmit={this.onSubmit}>
-                                <div className="input-group">
-                                    <input 
-                                        type="text" 
-                                        className="form-control" 
-                                        id="search-term" 
-                                        placeholder="Search..."
-                                        onChange={this.onChange}
-                                        value={this.state.search}
-                                    />
-                                    <button type="submit" className="btn btn-outline-dark btn-search-event">
-                                        <i className="fa fa-search" aria-hidden="true"></i>
-                                    </button>
-                                </div>
-                            </form>
+                            <div className="col-md-6">
+                                <form onSubmit={this.onSubmit}>
+                                    <div className="input-group">
+                                        <input 
+                                            type="text" 
+                                            className={this.state.error ? "form-control is-invalid" : "form-control"}
+                                            id="search-term" 
+                                            placeholder="Search..."
+                                            onChange={this.onChange}
+                                            value={this.state.search}
+                                        />
+                                        <button type="submit" className="btn btn-outline-dark btn-search-event">
+                                            <i className="fa fa-search" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
                         </div>
-                        </div>
+                        {this.state.error ? 
+                            <div className="row" style={{ margin: '5px 0 0 0'}}>
+                                <div className="text-danger">Please enter something in the search bar!</div>
+                            </div> : ''
+                        }
                     </div>
                 </div>
 

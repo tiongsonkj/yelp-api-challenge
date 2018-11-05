@@ -2,45 +2,60 @@ const express = require('express');
 const restify = require('restify');
 const config = require('./config');
 const yelp = require('yelp-fusion');
+const bodyParser = require('body-parser');
+const Cors = require('cors');
 
 const app = express();
 
-// start server
-const server = restify.createServer({
-    name: config.name,
-    version: config.version
-});
-
-server.listen(config.port, () => {
-    console.log(`Server is listening on port ${config.port}`);
-});
-
-server.pre((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
-    res.header('Access-Control-Allow-Headers', "Content-Type");
-    next();
-});
+app.use(Cors());
+app.use(bodyParser.urlencoded({ extended: false })); //??
+app.use(bodyParser.json());
 
 // Place holder for Yelp Fusion's API Key. Grab them
 // from https://www.yelp.com/developers/v3/manage_app
-const apiKey = 'cRXokvfb2tTyvP0J0U01MCoe3FdERmBbYHnQv-yfbeuIoGZQQdomPnRA_72uuYRJzKVrzqAh_zoA1AkW408AGOhBLzWnd0uyxTc6ew2KWfLm4WILFBDRscYfWU_cW3Yx';
 
-const searchRequest = {
-    term:'Four Barrel Coffee',
-    location: 'san francisco, ca'
-};
+// gets businesses in zip code 60540 and sorts closest by distance
+app.get('/', (req, res, next) => {
+    
+    const searchRequest = {
+        location: '60540',
+        sort_by: 'distance'
+    }
 
-server.get("/getsearch", (req, res, next) => {
-
-    const client = yelp.client(apiKey);
-
+    const client = yelp.client(config.apiKey);
+    
     client.search(searchRequest).then(response => {
-        const firstResult = response.jsonBody.businesses[0];
-        const prettyJson = JSON.stringify(firstResult, null, 4);
-        console.log(prettyJson);
-        res.send(prettyJson);
+        const businesses = response.jsonBody.businesses;
+        res.send(businesses)
         
         }).catch(e => {
         console.log(e);
     });
-})
+});
+
+app.get("/getsearch/:term", (req, res, next) => {
+    
+    // console.log(req.params.term);
+    const searchTerm = req.params.term;
+
+    const searchRequest = {
+        term: searchTerm,
+        location: '60540',
+        sort_by: 'distance'
+    };
+    const client = yelp.client(config.apiKey);
+
+    client.search(searchRequest).then(response => {
+        // console.log(response.jsonBody.businesses);
+        const businesses = response.jsonBody.businesses;
+        res.send(businesses);
+        // console.log(request)    
+        
+        }).catch(e => {
+        console.log(e);
+    });
+});
+
+app.listen(config.port, () => {
+    console.log(`listening to port 3001 ${config.port}`);
+});
