@@ -10,9 +10,6 @@ app.use(Cors());
 app.use(bodyParser.urlencoded({ extended: false })); //??
 app.use(bodyParser.json());
 
-// Place holder for Yelp Fusion's API Key. Grab them
-// from https://www.yelp.com/developers/v3/manage_app
-
 // gets businesses in zip code 60540 and sorts closest by distance
 app.get('/', (req, res, next) => {
     
@@ -32,6 +29,7 @@ app.get('/', (req, res, next) => {
     });
 });
 
+// gets businesses based on search term
 app.get("/getsearch/:term", (req, res, next) => {
     
     // console.log(req.params.term);
