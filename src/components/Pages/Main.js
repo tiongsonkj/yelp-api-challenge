@@ -72,6 +72,7 @@ class Main extends Component {
                         search: ''
                     });
             });
+            
         }
     };
 
@@ -95,21 +96,12 @@ class Main extends Component {
     };
 
     render() {
-        // convert meters into miles
-        this.state.businesses.map(business => {
-            const meters = business.distance;
-            const miles = meters * 0.00062137;
-
-            // change the distance value in the array
-            return business.distance = miles.toFixed(2);
-        });
-
         const businessDisplay = this.state.businesses.map(business => (
             <div key={business.id} className="card">
                 <img className="card-img-top" src={business.image_url ? business.image_url : replacementImage} alt="Business"/>
                 <div className="card-body">
                     <h5 className="card-title">{business.name}</h5><hr/>
-                    <p className="card-text">{business.distance} miles away</p><hr/>
+                    <p className="card-text">{(business.distance * 0.00062137).toFixed(2)} miles away</p><hr/>
                     <p className="card-text">
                         {business.location.address1}<br/>{business.location.city}, {business.location.state} {business.location.zip_code}
                     </p>
