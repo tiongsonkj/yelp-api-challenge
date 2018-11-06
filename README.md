@@ -1,6 +1,6 @@
 ## Yelp-API-Challenge
 
-Display businesses located in Naperville, IL using Yelp API.
+Display (20) businesses located in Naperville, IL using Yelp API. Businesses are sorted by closest in distance (miles). Search for other businesses in Naperville, IL. 
 
 ### Technologies used
 - React.js 
