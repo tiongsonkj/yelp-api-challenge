@@ -3,7 +3,7 @@ import { clearBusiness } from '../../actions/actions';
 import { connect } from 'react-redux';
 import replacementImage from '../../assets/no_image_available.jpg';
 
-import PropTypes from 'prop-types'; //WHAT IS THIS?! WHAT DOES IT DO AGAIN?!
+import PropTypes from 'prop-types';
 
 class Details extends Component {
     constructor(props) {
