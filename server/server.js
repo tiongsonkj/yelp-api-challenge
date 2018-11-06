@@ -7,7 +7,6 @@ const Cors = require('cors');
 const app = express();
 
 app.use(Cors());
-app.use(bodyParser.urlencoded({ extended: false })); //??
 app.use(bodyParser.json());
 
 // gets businesses in zip code 60540 and sorts closest by distance
@@ -18,7 +17,7 @@ app.get('/', (req, res, next) => {
         sort_by: 'distance'
     }
 
-    const client = yelp.client(config.apiKey);
+    const client = yelp.client('cRXokvfb2tTyvP0J0U01MCoe3FdERmBbYHnQv-yfbeuIoGZQQdomPnRA_72uuYRJzKVrzqAh_zoA1AkW408AGOhBLzWnd0uyxTc6ew2KWfLm4WILFBDRscYfWU_cW3Yx');
     
     client.search(searchRequest).then(response => {
         const businesses = response.jsonBody.businesses;
@@ -40,13 +39,11 @@ app.get("/getsearch/:term", (req, res, next) => {
         location: '60540',
         sort_by: 'distance'
     };
-    const client = yelp.client(config.apiKey);
+    const client = yelp.client('cRXokvfb2tTyvP0J0U01MCoe3FdERmBbYHnQv-yfbeuIoGZQQdomPnRA_72uuYRJzKVrzqAh_zoA1AkW408AGOhBLzWnd0uyxTc6ew2KWfLm4WILFBDRscYfWU_cW3Yx');
 
     client.search(searchRequest).then(response => {
-        // console.log(response.jsonBody.businesses);
         const businesses = response.jsonBody.businesses;
         res.send(businesses);
-        // console.log(request)    
         
         }).catch(e => {
         console.log(e);
@@ -54,5 +51,5 @@ app.get("/getsearch/:term", (req, res, next) => {
 });
 
 app.listen(config.port, () => {
-    console.log(`listening to port 3001 ${config.port}`);
+    console.log(`listening to port ${config.port}`);
 });

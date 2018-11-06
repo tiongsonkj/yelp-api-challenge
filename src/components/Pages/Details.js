@@ -26,7 +26,6 @@ class Details extends Component {
             <li className="categoryTitle" key={index}>{cat.title}</li>
         ));
        
-        console.log(this.props.business.business); 
         return (
             <div>
                 <button 
@@ -60,7 +59,7 @@ class Details extends Component {
                                 <div className="col-6">
                                     <b>Phone:</b><br/>
                                     <p>{phoneNum}</p>
-                                    <a href={yelpPageLink} target="_blank">Yelp Business Page</a>
+                                    <a href={yelpPageLink} target="_blank" rel="noopener noreferrer">Yelp Business Page</a>
                                 </div>
                                 <div className="col-6">
                                     <b>Price:</b><br/>
